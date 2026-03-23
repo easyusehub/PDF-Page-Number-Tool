@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Live Page Number Tool</title>
+<title>PDF Page Number Tool</title>
 <meta name="description" content="Upload PDF, select pages, add live editable page numbers or auto-number all pages. Clear PDF display, mobile-friendly, multi-page support.">
 <style>
 body { font-family: Arial,sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; }
@@ -13,9 +13,11 @@ header p { margin:5px 0 0; font-size:0.95rem; }
 .ad-placeholder { width:100%; height:60px; background:#ccc; text-align:center; line-height:60px; margin:10px 0; border-radius:8px; }
 .container { max-width:900px; margin:20px auto; padding:0 15px; }
 #upload-box { border:3px dashed #9333ea; padding:20px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; }
+#page-selection { margin-bottom:10px; display:flex; flex-wrap:wrap; gap:10px; }
+#page-selection label { background:#f0f0f0; padding:5px 10px; border-radius:5px; cursor:pointer; }
 #pdf-viewer { width:100%; border:1px solid #ccc; overflow:auto; margin-bottom:20px; background:#fff; position:relative; }
 #pdf-viewer canvas { display:block; width:100%; height:auto; margin-bottom:10px; }
-.page-number { position:absolute; bottom:5px; left:50%; transform:translateX(-50%); font-size:24px; color:#000; background:rgba(255,255,255,0.6); padding:2px 5px; border-radius:4px; cursor:text; }
+.page-number { position:absolute; bottom:5px; left:50%; transform:translateX(-50%); font-size:24px; color:#000; background:rgba(255,255,255,0.6); padding:2px 5px; border-radius:4px; cursor:text; display:none; }
 .controls { display:flex; flex-wrap:wrap; justify-content:center; margin-bottom:10px; }
 button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; color:#fff; cursor:pointer; margin:5px; }
 #toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#9333ea; color:#fff; padding:10px 20px; border-radius:8px; display:none; z-index:9999; }
@@ -36,10 +38,12 @@ button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; 
 
 <div class="ad-placeholder">Middle Ad Placeholder</div>
 
+<div id="page-selection"></div>
+
 <div class="controls">
 <button onclick="window.location.href='https://easyusehub.blogspot.com/?m=1'">🏠 Home</button>
 <button onclick="window.location.href='https://easyusehub.blogspot.com/p/free-pdf-tools-easyusehub.html?m=1'">📚 All PDF Tools</button>
-<button id="autoNumberAll">Auto Number All Pages</button>
+<button id="autoNumberAll">Auto Number Selected Pages</button>
 <button id="downloadPdf">Download PDF</button>
 </div>
 
@@ -55,6 +59,7 @@ button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; 
 const uploadBox = document.getElementById('upload-box');
 const fileInput = document.getElementById('fileInput');
 const pdfViewer = document.getElementById('pdf-viewer');
+const pageSelection = document.getElementById('page-selection');
 const autoNumberAll = document.getElementById('autoNumberAll');
 const downloadBtn = document.getElementById('downloadPdf');
 const toast = document.getElementById('toast');
@@ -70,6 +75,7 @@ fileInput.addEventListener('change', async e => {
     pdfBytes = await file.arrayBuffer();
     pdfDoc = await pdfjsLib.getDocument({data: pdfBytes}).promise;
     renderAllPages();
+    createPageSelection();
 });
 
 async function renderAllPages(){
@@ -98,14 +104,35 @@ async function renderAllPages(){
         pdfViewer.appendChild(numDiv);
         numberDivs.push(numDiv);
 
-        // Click to select page number
+        // Prevent scroll when editing
         numDiv.addEventListener('click', (e)=> e.stopPropagation());
     }
 }
 
-// Auto-number all pages
+function createPageSelection(){
+    pageSelection.innerHTML = '';
+    for(let i=1; i<=pdfDoc.numPages; i++){
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.dataset.page = i;
+        checkbox.addEventListener('change', togglePageNumber);
+        label.appendChild(checkbox);
+        label.append(` Page ${i}`);
+        pageSelection.appendChild(label);
+    }
+}
+
+function togglePageNumber(e){
+    const page = parseInt(e.target.dataset.page) - 1;
+    numberDivs[page].style.display = e.target.checked ? 'block' : 'none';
+}
+
+// Auto number selected pages
 autoNumberAll.onclick = () => {
-    numberDivs.forEach((div,i)=> div.innerText = i+1);
+    pageSelection.querySelectorAll('input[type=checkbox]').forEach((cb,i)=>{
+        if(cb.checked) numberDivs[i].innerText = i+1;
+    });
 };
 
 // Download PDF with page numbers
@@ -115,10 +142,12 @@ downloadBtn.onclick = async () => {
     const color = PDFLib.rgb(0,0,0);
 
     pages.forEach((page,i)=>{
-        const text = numberDivs[i].innerText || '';
-        const x = page.getWidth()/2 - 10;
-        const y = 10;
-        page.drawText(text,{x:x, y:y, size:24, color:color}); // Bigger number size
+        if(numberDivs[i].style.display === 'block'){
+            const text = numberDivs[i].innerText || '';
+            const x = page.getWidth()/2 - 10;
+            const y = 10;
+            page.drawText(text,{x:x, y:y, size:24, color:color});
+        }
     });
 
     const bytes = await pdfLibDoc.save();

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDF Page Number Tool</title>
-<meta name="description" content="Upload PDF, select pages, add live editable page numbers or auto-number all pages. Clear PDF display, mobile-friendly, multi-page support.">
+<meta name="description" content="Upload PDF, select pages, add editable page numbers manually or auto-number all pages. Clear PDF display, mobile-friendly, multi-page support.">
 <style>
 body { font-family: Arial,sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; }
 header { padding:15px; background:#9333ea; color:#fff; text-align:center; }
@@ -15,11 +15,13 @@ header p { margin:5px 0 0; font-size:0.95rem; }
 #upload-box { border:3px dashed #9333ea; padding:20px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; }
 #page-selection { margin-bottom:10px; display:flex; flex-wrap:wrap; gap:10px; }
 #page-selection label { background:#f0f0f0; padding:5px 10px; border-radius:5px; cursor:pointer; }
+#number-controls { margin-bottom:10px; display:flex; gap:10px; align-items:center; }
 #pdf-viewer { width:100%; border:1px solid #ccc; overflow:auto; margin-bottom:20px; background:#fff; position:relative; }
 #pdf-viewer canvas { display:block; width:100%; height:auto; margin-bottom:10px; }
 .page-number { position:absolute; bottom:5px; left:50%; transform:translateX(-50%); font-size:24px; color:#000; background:rgba(255,255,255,0.6); padding:2px 5px; border-radius:4px; cursor:text; display:none; }
 .controls { display:flex; flex-wrap:wrap; justify-content:center; margin-bottom:10px; }
 button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; color:#fff; cursor:pointer; margin:5px; }
+input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px solid #ccc; }
 #toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#9333ea; color:#fff; padding:10px 20px; border-radius:8px; display:none; z-index:9999; }
 </style>
 </head>
@@ -27,7 +29,7 @@ button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; 
 
 <header>
 <h1>PDF Live Page Number Tool</h1>
-<p>Select pages, add/edit live page numbers, or auto-number all pages.</p>
+<p>Select pages, add/edit page numbers manually or auto-number all pages.</p>
 </header>
 
 <div class="ad-placeholder">Top Ad Placeholder</div>
@@ -40,10 +42,15 @@ button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; 
 
 <div id="page-selection"></div>
 
+<div id="number-controls">
+<input type="number" id="pageNumberInput" placeholder="Type number">
+<button id="addNumberBtn">Add Number</button>
+<button id="autoNumberAll">Auto Number Selected Pages</button>
+</div>
+
 <div class="controls">
 <button onclick="window.location.href='https://easyusehub.blogspot.com/?m=1'">🏠 Home</button>
 <button onclick="window.location.href='https://easyusehub.blogspot.com/p/free-pdf-tools-easyusehub.html?m=1'">📚 All PDF Tools</button>
-<button id="autoNumberAll">Auto Number Selected Pages</button>
 <button id="downloadPdf">Download PDF</button>
 </div>
 
@@ -60,6 +67,8 @@ const uploadBox = document.getElementById('upload-box');
 const fileInput = document.getElementById('fileInput');
 const pdfViewer = document.getElementById('pdf-viewer');
 const pageSelection = document.getElementById('page-selection');
+const addNumberBtn = document.getElementById('addNumberBtn');
+const pageNumberInput = document.getElementById('pageNumberInput');
 const autoNumberAll = document.getElementById('autoNumberAll');
 const downloadBtn = document.getElementById('downloadPdf');
 const toast = document.getElementById('toast');
@@ -103,9 +112,6 @@ async function renderAllPages(){
         numDiv.dataset.page = p;
         pdfViewer.appendChild(numDiv);
         numberDivs.push(numDiv);
-
-        // Prevent scroll when editing
-        numDiv.addEventListener('click', (e)=> e.stopPropagation());
     }
 }
 
@@ -116,22 +122,34 @@ function createPageSelection(){
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.dataset.page = i;
-        checkbox.addEventListener('change', togglePageNumber);
         label.appendChild(checkbox);
         label.append(` Page ${i}`);
         pageSelection.appendChild(label);
     }
 }
 
-function togglePageNumber(e){
-    const page = parseInt(e.target.dataset.page) - 1;
-    numberDivs[page].style.display = e.target.checked ? 'block' : 'none';
-}
+addNumberBtn.onclick = () => {
+    const number = pageNumberInput.value;
+    if(!number) return;
+    pageSelection.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+        if(cb.checked){
+            const page = parseInt(cb.dataset.page) - 1;
+            numberDivs[page].innerText = number;
+            numberDivs[page].style.display = 'block';
+        }
+    });
+    pageNumberInput.value = '';
+};
 
 // Auto number selected pages
 autoNumberAll.onclick = () => {
-    pageSelection.querySelectorAll('input[type=checkbox]').forEach((cb,i)=>{
-        if(cb.checked) numberDivs[i].innerText = i+1;
+    let counter = 1;
+    pageSelection.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+        if(cb.checked){
+            const page = parseInt(cb.dataset.page) - 1;
+            numberDivs[page].innerText = counter++;
+            numberDivs[page].style.display = 'block';
+        }
     });
 };
 

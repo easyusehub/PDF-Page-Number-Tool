@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Page Number Tool</title>
-<meta name="description" content="Upload PDF, select pages, add live editable page numbers or auto-fill all pages. Mobile-friendly, clear PDF viewer.">
+<title>PDF Live Page Number Tool</title>
+<meta name="description" content="Upload PDF, select pages, add live editable page numbers or auto-number all pages. Clear PDF display, mobile-friendly, multi-page support.">
 <style>
 body { font-family: Arial,sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; }
 header { padding:15px; background:#9333ea; color:#fff; text-align:center; }
@@ -13,9 +13,9 @@ header p { margin:5px 0 0; font-size:0.95rem; }
 .ad-placeholder { width:100%; height:60px; background:#ccc; text-align:center; line-height:60px; margin:10px 0; border-radius:8px; }
 .container { max-width:900px; margin:20px auto; padding:0 15px; }
 #upload-box { border:3px dashed #9333ea; padding:20px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; }
-#pdf-viewer { width:100%; height:60vh; border:1px solid #ccc; overflow:auto; margin-bottom:20px; background:#fff; position:relative; }
-#pdf-viewer canvas { display:block; width:100%; height:auto; }
-.page-number { position:absolute; bottom:5px; left:50%; transform:translateX(-50%); font-size:14px; color:#000; background:rgba(255,255,255,0.5); padding:2px 5px; border-radius:4px; cursor:text; }
+#pdf-viewer { width:100%; border:1px solid #ccc; overflow:auto; margin-bottom:20px; background:#fff; position:relative; }
+#pdf-viewer canvas { display:block; width:100%; height:auto; margin-bottom:10px; }
+.page-number { position:absolute; bottom:5px; left:50%; transform:translateX(-50%); font-size:24px; color:#000; background:rgba(255,255,255,0.6); padding:2px 5px; border-radius:4px; cursor:text; }
 .controls { display:flex; flex-wrap:wrap; justify-content:center; margin-bottom:10px; }
 button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; color:#fff; cursor:pointer; margin:5px; }
 #toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#9333ea; color:#fff; padding:10px 20px; border-radius:8px; display:none; z-index:9999; }
@@ -24,8 +24,8 @@ button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; 
 <body>
 
 <header>
-<h1>PDF Editable Page Number Tool</h1>
-<p>Select pages, add live editable numbers or auto-number all pages.</p>
+<h1>PDF Live Page Number Tool</h1>
+<p>Select pages, add/edit live page numbers, or auto-number all pages.</p>
 </header>
 
 <div class="ad-placeholder">Top Ad Placeholder</div>
@@ -50,6 +50,7 @@ button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
 <script>
 const uploadBox = document.getElementById('upload-box');
 const fileInput = document.getElementById('fileInput');
@@ -58,73 +59,77 @@ const autoNumberAll = document.getElementById('autoNumberAll');
 const downloadBtn = document.getElementById('downloadPdf');
 const toast = document.getElementById('toast');
 
-let pdfDoc = null, pdfBytes = null, currentPage = 1, scale = 1;
+let pdfDoc = null, pdfBytes = null;
 let canvasList = [], numberDivs = [];
 
-uploadBox.onclick = ()=>fileInput.click();
+uploadBox.onclick = () => fileInput.click();
 
-fileInput.addEventListener('change', async e=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  pdfBytes = await file.arrayBuffer();
-  pdfDoc = await pdfjsLib.getDocument({data: pdfBytes}).promise;
-  renderAllPages();
+fileInput.addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    pdfBytes = await file.arrayBuffer();
+    pdfDoc = await pdfjsLib.getDocument({data: pdfBytes}).promise;
+    renderAllPages();
 });
 
 async function renderAllPages(){
-  pdfViewer.innerHTML = '';
-  canvasList = [];
-  numberDivs = [];
-  for(let p=1;p<=pdfDoc.numPages;p++){
-    const page = await pdfDoc.getPage(p);
-    const viewport = page.getViewport({scale:1});
-    scale = pdfViewer.clientWidth / viewport.width;
-    const scaledViewport = page.getViewport({scale:scale});
+    pdfViewer.innerHTML = '';
+    canvasList = [];
+    numberDivs = [];
 
-    const canvas = document.createElement('canvas');
-    canvas.width = scaledViewport.width;
-    canvas.height = scaledViewport.height;
-    await page.render({canvasContext:canvas.getContext('2d'), viewport:scaledViewport}).promise;
-    pdfViewer.appendChild(canvas);
-    canvasList.push(canvas);
+    for(let p=1; p<=pdfDoc.numPages; p++){
+        const page = await pdfDoc.getPage(p);
+        const viewport = page.getViewport({scale:1});
+        const scale = pdfViewer.clientWidth / viewport.width;
+        const scaledViewport = page.getViewport({scale:scale});
 
-    const numDiv = document.createElement('div');
-    numDiv.className = 'page-number';
-    numDiv.contentEditable = true;
-    numDiv.innerText = '';
-    numDiv.dataset.page = p;
-    pdfViewer.appendChild(numDiv);
-    numberDivs.push(numDiv);
-  }
+        const canvas = document.createElement('canvas');
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+        await page.render({canvasContext: canvas.getContext('2d'), viewport: scaledViewport}).promise;
+        pdfViewer.appendChild(canvas);
+        canvasList.push(canvas);
+
+        const numDiv = document.createElement('div');
+        numDiv.className = 'page-number';
+        numDiv.contentEditable = true;
+        numDiv.innerText = '';
+        numDiv.dataset.page = p;
+        pdfViewer.appendChild(numDiv);
+        numberDivs.push(numDiv);
+
+        // Click to select page number
+        numDiv.addEventListener('click', (e)=> e.stopPropagation());
+    }
 }
 
-// Auto number all pages
-autoNumberAll.onclick = ()=>{
-  numberDivs.forEach((div,i)=>div.innerText = i+1);
+// Auto-number all pages
+autoNumberAll.onclick = () => {
+    numberDivs.forEach((div,i)=> div.innerText = i+1);
 };
 
 // Download PDF with page numbers
-downloadBtn.onclick = async ()=>{
-  const pdfLibDoc = await PDFLib.PDFDocument.load(pdfBytes);
-  const pages = pdfLibDoc.getPages();
-  const color = PDFLib.rgb(0,0,0);
+downloadBtn.onclick = async () => {
+    const pdfLibDoc = await PDFLib.PDFDocument.load(pdfBytes);
+    const pages = pdfLibDoc.getPages();
+    const color = PDFLib.rgb(0,0,0);
 
-  pages.forEach((page,i)=>{
-    const text = numberDivs[i].innerText || '';
-    const x = page.getWidth()/2 - 10;
-    const y = 10;
-    page.drawText(text,{x:x,y:y,size:14,color:color});
-  });
+    pages.forEach((page,i)=>{
+        const text = numberDivs[i].innerText || '';
+        const x = page.getWidth()/2 - 10;
+        const y = 10;
+        page.drawText(text,{x:x, y:y, size:24, color:color}); // Bigger number size
+    });
 
-  const bytes = await pdfLibDoc.save();
-  const blob = new Blob([bytes],{type:'application/pdf'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'numbered-'+fileInput.files[0].name;
-  a.click();
-  toast.style.display='block';
-  setTimeout(()=>{toast.style.display='none';},2500);
+    const bytes = await pdfLibDoc.save();
+    const blob = new Blob([bytes], {type:'application/pdf'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'numbered-'+fileInput.files[0].name;
+    a.click();
+    toast.style.display='block';
+    setTimeout(()=>{toast.style.display='none';},2500);
 };
 </script>
 

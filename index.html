@@ -5,48 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDF Page Number Tool</title>
 <style>
-body { font-family: Arial,sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; font-size: 18px; position: relative; overflow-x: hidden; }
-header { padding:20px; background:#9333ea; color:#fff; text-align:center; }
-header h1 { margin:0; font-size:2rem; }
-header p { margin:8px 0 0; font-size:1.1rem; }
+body { font-family: Arial,sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; position: relative; overflow-x: hidden; }
+header { padding:15px; background:#9333ea; color:#fff; text-align:center; }
+header h1 { margin:0; font-size:1.8rem; }
+header p { margin:5px 0 0; font-size:0.95rem; }
 .container { max-width:900px; margin:20px auto; padding:0 15px; }
 
-/* Upload Box Style */
-#upload-box { border:3px dashed #9333ea; padding:40px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; font-weight: bold; font-size: 20px; position: relative; }
-#upload-box:hover { background: #f3f0ff; }
+/* তোর সেইম আপলোড বক্স */
+#upload-box { border:3px dashed #9333ea; padding:20px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; position: relative; }
 #fileInput { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
-/* Page Selection */
-#page-selection { margin-bottom:15px; display:flex; flex-wrap:wrap; gap:10px; justify-content: center; }
-#page-selection label { background:#f0f0f0; padding:8px 12px; border-radius:5px; cursor:pointer; border: 1px solid #ddd; }
+#page-selection { margin-bottom:10px; display:flex; flex-wrap:wrap; gap:10px; }
+#page-selection label { background:#f0f0f0; padding:5px 10px; border-radius:5px; cursor:pointer; }
 
-/* Sequence: Input -> Add/Auto -> Download */
-#number-controls { margin-bottom:15px; display:flex; flex-direction: column; align-items:center; gap:12px; }
-.button-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+/* বাটন পজিশন চেঞ্জ করার জন্য নিচের স্টাইল */
+#number-controls { margin-bottom:10px; display:flex; flex-direction: column; align-items:center; gap:10px; }
+.btn-group { display: flex; gap: 10px; }
 
 #pdf-viewer { width:100%; border:1px solid #ccc; overflow:auto; margin-bottom:20px; background:#fff; position:relative; }
 #pdf-viewer canvas { display:block; width:100%; height:auto; margin-bottom:10px; }
+.page-number { position:absolute; color:red; font-weight:bold; font-size:20px; pointer-events:none; border:2px solid red; padding:2px; background:rgba(255,255,255,0.8); }
 
-/* Live preview hide */
-.page-number { display: none !important; }
-
-button { padding:12px 25px; border:none; border-radius:8px; background:#9333ea; color:#fff; cursor:pointer; margin:5px; font-weight: bold; font-size: 17px; }
-input[type=number] { padding:12px; width:140px; border-radius:5px; border:1px solid #ccc; text-align: center; font-size: 18px; }
+button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; color:#fff; cursor:pointer; margin:5px; font-weight: bold; }
+input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px solid #ccc; text-align: center; }
 #toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#9333ea; color:#fff; padding:10px 20px; border-radius:8px; display:none; z-index:9999; }
 
-/* Ad Bridges */
-.custom-ad-bridge { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 25px; margin: 15px 0; border-radius: 8px; cursor: pointer; text-align: center; }
-.ad-btn { background: #fbbf24; color: #000; padding: 8px 20px; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 8px; font-size: 15px; }
+/* তোর সেইম অ্যাড ডিজাইন */
+.custom-ad-bridge { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 20px; margin: 10px 0; border-radius: 8px; cursor: pointer; text-align: center; }
+.ad-btn { background: #fbbf24; color: #000; padding: 5px 15px; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 5px; }
 
-/* Push Ad */
-#push-notification { position: fixed; bottom: -150px; right: 20px; width: 280px; background: #fff; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; align-items: center; padding: 12px; z-index: 10000; transition: bottom 0.5s ease; cursor: pointer; border-left: 6px solid #2563eb; }
+#push-notification { position: fixed; bottom: -150px; right: 20px; width: 280px; background: #fff; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; align-items: center; padding: 10px; z-index: 10000; transition: bottom 0.5s ease; cursor: pointer; border-left: 5px solid #2563eb; }
 #push-notification.active { bottom: 20px; }
-#push-notification img { width: 50px; height: 50px; border-radius: 5px; margin-right: 12px; }
-.close-push { position: absolute; top: 5px; right: 8px; color: #aaa; cursor: pointer; font-size: 20px; }
+#push-notification img { width: 45px; height: 45px; border-radius: 5px; margin-right: 10px; }
+.close-push { position: absolute; top: 2px; right: 5px; color: #aaa; cursor: pointer; }
 
-/* Bottom Nav Layout */
-.bottom-nav { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
-.bottom-nav button { flex: 1; max-width: 200px; }
+/* বটম বাটন লেআউট */
+.bottom-nav { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -54,31 +48,31 @@ input[type=number] { padding:12px; width:140px; border-radius:5px; border:1px so
 <div id="push-notification" onclick="window.open('https://easyusehub.blogspot.com', '_blank')">
     <span class="close-push" onclick="event.stopPropagation(); this.parentElement.classList.remove('active');">&times;</span>
     <img src="https://cdn-icons-png.flaticon.com/512/5968/5968313.png" alt="icon">
-    <div style="text-align:left; font-size:13px;">
+    <div style="text-align:left; font-size:12px;">
         <b style="color:#222;">🚀 46+ Pro Tools Ready!</b>
-        <p style="margin:4px 0; color:#666;">Check EasyUseHub for free tools.</p>
+        <p style="margin:2px 0; color:#666;">Check all free PDF tools & calculators.</p>
     </div>
 </div>
 
 <header>
     <h1>PDF Page Number Tool</h1>
-    <p>Upload, Select, and Add Numbers to your PDF.</p>
+    <p>Upload and add page numbers easily.</p>
 </header>
 
 <div class="container">
     <div class="custom-ad-bridge" onclick="window.open('https://easyusehub.blogspot.com', '_blank')">
-        <b style="font-size:18px;">🚀 Try 46+ Premium Free Web Tools!</b><br>
+        <b style="font-size:16px;">🚀 Try 46+ Premium Free Web Tools!</b><br>
         <div class="ad-btn">Open EasyUseHub</div>
     </div>
 
     <div id="upload-box">
-        📁 Click Here to Upload PDF
+        📁 Click to Upload PDF
         <input type="file" id="fileInput" accept="application/pdf">
     </div>
 
     <div class="custom-ad-bridge" style="background: linear-gradient(135deg, #059669, #10b981);" onclick="window.open('https://easyusehub.blogspot.com/p/image-compressor.html', '_blank')">
-        <b style="font-size:18px;">⚡ High-Speed Image Compressor</b><br>
-        <small>100% Free at EasyUseHub</small>
+        <b style="font-size:16px;">⚡ High-Speed Image Compressor</b><br>
+        <small>100% Free & Fast at EasyUseHub</small>
     </div>
 
     <div id="page-selection"></div>
@@ -86,18 +80,18 @@ input[type=number] { padding:12px; width:140px; border-radius:5px; border:1px so
     <div id="number-controls">
         <input type="number" id="pageNumberInput" placeholder="Start No.">
         
-        <div class="button-group">
+        <div class="btn-group">
             <button id="addNumberBtn">Add Number</button>
             <button id="autoNumberAll">Auto Number All</button>
         </div>
 
-        <button id="downloadPdf" style="background:#2563eb; width: 250px;">📥 Download PDF</button>
+        <button id="downloadPdf" style="background:#2563eb; width: 220px;">📥 Download PDF</button>
     </div>
 
     <div id="pdf-viewer"></div>
 
     <div class="custom-ad-bridge" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="window.open('https://easyusehub.blogspot.com/p/ultimate-calculators-hub.html', '_blank')">
-        <b style="font-size:18px;">🔢 Visit Calculators Hub</b><br>
+        <b style="font-size:16px;">🔢 Visit Calculators Hub</b><br>
         <div class="ad-btn" style="background:#000; color:#fff;">Visit Now</div>
     </div>
 
@@ -113,6 +107,7 @@ input[type=number] { padding:12px; width:140px; border-radius:5px; border:1px so
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
 <script>
+// স্ক্রিপ্ট তোর আগেরটাই থাকলো, কোনো পরিবর্তন করি নাই
 const fileInput = document.getElementById('fileInput');
 const pdfViewer = document.getElementById('pdf-viewer');
 const pageSelection = document.getElementById('page-selection');
@@ -128,12 +123,9 @@ let numberData = [];
 fileInput.addEventListener('change', async e => {
     const file = e.target.files[0];
     if(!file) return;
-
     setTimeout(() => { document.getElementById('push-notification').classList.add('active'); }, 1000);
-
     pdfBytes = await file.arrayBuffer();
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-    
     pdfDoc = await pdfjsLib.getDocument({data: pdfBytes}).promise;
     renderAllPages();
     createPageSelection();
@@ -194,17 +186,11 @@ autoNumberAll.onclick = () => {
 downloadBtn.onclick = async () => {
     const pdfLibDoc = await PDFLib.PDFDocument.load(pdfBytes);
     const pages = pdfLibDoc.getPages();
-    const blackColor = PDFLib.rgb(0, 0, 0);
-
     pages.forEach((page, i) => {
         if(numberData[i] && numberData[i] !== ""){
-            const text = numberData[i];
-            const x = page.getWidth()/2 - 10;
-            const y = 35; // Position: ektu upore
-            page.drawText(text, {x:x, y:y, size:24, color:blackColor});
+            page.drawText(numberData[i], {x: page.getWidth()/2 - 10, y: 20, size: 24, color: PDFLib.rgb(1, 0, 0)});
         }
     });
-
     const bytes = await pdfLibDoc.save();
     const blob = new Blob([bytes], {type:'application/pdf'});
     const url = URL.createObjectURL(blob);

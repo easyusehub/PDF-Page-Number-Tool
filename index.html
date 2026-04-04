@@ -9,50 +9,36 @@
 body { font-family: Arial,sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; position: relative; overflow-x: hidden; }
 header { padding:15px; background:#9333ea; color:#fff; text-align:center; }
 header h1 { margin:0; font-size:1.8rem; }
-header p { margin:5px 0 0; font-size:0.95rem; }
 .container { max-width:900px; margin:20px auto; padding:0 15px; }
-#upload-box { border:3px dashed #9333ea; padding:20px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; }
-#page-selection { margin-bottom:10px; display:flex; flex-wrap:wrap; gap:10px; }
-#page-selection label { background:#f0f0f0; padding:5px 10px; border-radius:5px; cursor:pointer; }
 
-/* Tor deya sequence onujayi alignment */
+/* Upload Box */
+#upload-box { border:3px dashed #9333ea; padding:20px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; }
+
+/* Page Selection Area */
+#page-selection { margin-bottom:10px; display:flex; flex-wrap:wrap; gap:10px; min-height: 20px; border: 1px solid #eee; padding: 10px; }
+#page-selection label { background:#f0f0f0; padding:5px 10px; border-radius:5px; cursor:pointer; font-size: 14px; border: 1px solid #ddd; }
+
+/* Sequence Layout */
 #number-controls { margin-bottom:10px; display:flex; flex-direction: column; align-items:center; gap:10px; }
 .btn-group { display: flex; gap: 10px; }
 
-#pdf-viewer { width:100%; border:1px solid #ccc; overflow:auto; margin-bottom:20px; background:#fff; position:relative; }
+#pdf-viewer { width:100%; border:1px solid #ccc; overflow:auto; margin-bottom:20px; background:#fff; min-height: 200px; }
 #pdf-viewer canvas { display:block; width:100%; height:auto; margin-bottom:10px; }
-.page-number { position:absolute; color:red; font-weight:bold; font-size:20px; pointer-events:none; border:2px solid red; padding:2px; background:rgba(255,255,255,0.8); }
 
 button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; color:#fff; cursor:pointer; margin:5px; font-weight: bold; }
-input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px solid #ccc; text-align: center; }
-#toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#9333ea; color:#fff; padding:10px 20px; border-radius:8px; display:none; z-index:9999; }
+input[type=number] { padding:8px; width:100px; border-radius:5px; border:1px solid #ccc; text-align: center; }
 
+/* Ad Styles */
 .custom-ad-bridge { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 20px; margin: 10px 0; border-radius: 8px; cursor: pointer; text-align: center; }
 .ad-btn { background: #fbbf24; color: #000; padding: 5px 15px; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 5px; }
 
-#push-notification { position: fixed; bottom: -150px; right: 20px; width: 280px; background: #fff; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; align-items: center; padding: 10px; z-index: 10000; transition: bottom 0.5s ease; cursor: pointer; border-left: 5px solid #2563eb; }
-#push-notification.active { bottom: 20px; }
-#push-notification img { width: 45px; height: 45px; border-radius: 5px; margin-right: 10px; }
-.close-push { position: absolute; top: 2px; right: 5px; color: #aaa; cursor: pointer; }
-
-/* Home/All Tools niche bishanor jonne */
-.bottom-nav { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
+/* Nav Buttons niche */
+.bottom-nav { display: flex; justify-content: center; gap: 10px; margin-top: 15px; padding-bottom: 20px; }
 </style>
 </head>
 <body>
 
-<div id="push-notification" onclick="window.open('https://easyusehub.blogspot.com', '_blank')">
-    <span class="close-push" onclick="event.stopPropagation(); this.parentElement.classList.remove('active');">&times;</span>
-    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968313.png" alt="icon">
-    <div style="text-align:left; font-size:12px;">
-        <b style="color:#222;">🚀 46+ Pro Tools Ready!</b>
-        <p style="margin:2px 0; color:#666;">Check all free PDF tools & calculators.</p>
-    </div>
-</div>
-
-<header>
-    <h1>PDF Page Number Tool</h1>
-</header>
+<header><h1>PDF Page Number Tool</h1></header>
 
 <div class="container">
     <div class="custom-ad-bridge" onclick="window.open('https://easyusehub.blogspot.com', '_blank')">
@@ -64,20 +50,18 @@ input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px soli
     <input type="file" id="fileInput" accept="application/pdf" style="display:none;">
 
     <div class="custom-ad-bridge" style="background: linear-gradient(135deg, #059669, #10b981);" onclick="window.open('https://easyusehub.blogspot.com/p/image-compressor.html', '_blank')">
-        <b>⚡ High-Speed Image Compressor</b><br>
+        <b>⚡ Image Compressor</b><br>
         <small>Free at EasyUseHub</small>
     </div>
 
-    <div id="page-selection"></div>
+    <div id="page-selection">Upload a PDF to see page options...</div>
 
     <div id="number-controls">
         <input type="number" id="pageNumberInput" placeholder="Start No.">
-        
         <div class="btn-group">
             <button id="addNumberBtn">Add Number</button>
             <button id="autoNumberAll">Auto Number All</button>
         </div>
-
         <button id="downloadPdf" style="background:#2563eb; width: 220px;">📥 Download PDF</button>
     </div>
 
@@ -90,17 +74,14 @@ input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px soli
 
     <div class="bottom-nav">
         <button onclick="window.location.href='https://easyusehub.blogspot.com/?m=1'">🏠 Home</button>
-        <button onclick="window.location.href='https://easyusehub.blogspot.com/p/free-pdf-tools-online.html'">📚 All PDF Tools</button>
+        <button onclick="window.location.href='https://easyusehub.blogspot.com/p/free-pdf-tools-online.html'">📚 All Tools</button>
     </div>
-
-    <div id="toast">PDF Downloaded!</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
 <script>
-/* Tor deya original script - kono logic change kori nai */
 const fileInput = document.getElementById('fileInput');
 const pdfViewer = document.getElementById('pdf-viewer');
 const pageSelection = document.getElementById('page-selection');
@@ -108,20 +89,25 @@ const addNumberBtn = document.getElementById('addNumberBtn');
 const pageNumberInput = document.getElementById('pageNumberInput');
 const autoNumberAll = document.getElementById('autoNumberAll');
 const downloadBtn = document.getElementById('downloadPdf');
-const toast = document.getElementById('toast');
 
 let pdfDoc = null, pdfBytes = null;
 let numberData = []; 
 
+// File Upload Logic (Tor original script)
 fileInput.addEventListener('change', async e => {
     const file = e.target.files[0];
     if(!file) return;
-    setTimeout(() => { document.getElementById('push-notification').classList.add('active'); }, 1000);
+
     pdfBytes = await file.arrayBuffer();
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-    pdfDoc = await pdfjsLib.getDocument({data: pdfBytes}).promise;
-    renderAllPages();
-    createPageSelection();
+    
+    try {
+        pdfDoc = await pdfjsLib.getDocument({data: pdfBytes}).promise;
+        renderAllPages();
+        createPageSelection();
+    } catch (err) {
+        alert("Error loading PDF: " + err.message);
+    }
 });
 
 async function renderAllPages(){
@@ -129,13 +115,12 @@ async function renderAllPages(){
     numberData = new Array(pdfDoc.numPages).fill("");
     for(let p=1; p<=pdfDoc.numPages; p++){
         const page = await pdfDoc.getPage(p);
-        const viewport = page.getViewport({scale:1});
-        const scale = pdfViewer.clientWidth / viewport.width;
-        const scaledViewport = page.getViewport({scale:scale});
+        const viewport = page.getViewport({scale: 0.5}); // Scale ektu komiyechi speed-er jonne
         const canvas = document.createElement('canvas');
-        canvas.width = scaledViewport.width;
-        canvas.height = scaledViewport.height;
-        await page.render({canvasContext: canvas.getContext('2d'), viewport: scaledViewport}).promise;
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        await page.render({canvasContext: context, viewport: viewport}).promise;
         pdfViewer.appendChild(canvas);
     }
 }
@@ -149,50 +134,50 @@ function createPageSelection(){
         checkbox.checked = true;
         checkbox.dataset.page = i;
         label.appendChild(checkbox);
-        label.append(` Page ${i}`);
+        label.append(" Page " + i);
         pageSelection.appendChild(label);
     }
 }
 
 addNumberBtn.onclick = () => {
     const number = pageNumberInput.value;
-    if(!number) return;
-    pageSelection.querySelectorAll('input[type=checkbox]').forEach(cb=>{
-        if(cb.checked){
-            numberData[parseInt(cb.dataset.page) - 1] = number;
-        }
+    if(!number) { alert("Enter a number"); return; }
+    const checkboxes = pageSelection.querySelectorAll('input[type=checkbox]');
+    checkboxes.forEach(cb => {
+        if(cb.checked) numberData[parseInt(cb.dataset.page) - 1] = number;
     });
-    alert("Numbers added!");
-    pageNumberInput.value = '';
+    alert("Number added to selected pages!");
 };
 
 autoNumberAll.onclick = () => {
     let counter = parseInt(pageNumberInput.value) || 1;
-    pageSelection.querySelectorAll('input[type=checkbox]').forEach(cb=>{
-        if(cb.checked){
-            numberData[parseInt(cb.dataset.page) - 1] = counter++.toString();
-        }
+    const checkboxes = pageSelection.querySelectorAll('input[type=checkbox]');
+    checkboxes.forEach(cb => {
+        if(cb.checked) numberData[parseInt(cb.dataset.page) - 1] = (counter++).toString();
     });
-    alert("Auto-numbering applied!");
+    alert("Auto-numbering done!");
 };
 
 downloadBtn.onclick = async () => {
+    if(!pdfBytes) return;
     const pdfLibDoc = await PDFLib.PDFDocument.load(pdfBytes);
     const pages = pdfLibDoc.getPages();
     pages.forEach((page, i) => {
-        if(numberData[i] && numberData[i] !== ""){
-            page.drawText(numberData[i], {x: page.getWidth()/2 - 10, y: 20, size: 24, color: PDFLib.rgb(1, 0, 0)});
+        if(numberData[i]){
+            page.drawText(numberData[i], {
+                x: page.getWidth()/2 - 10,
+                y: 25,
+                size: 20,
+                color: PDFLib.rgb(0, 0, 0) // Black color
+            });
         }
     });
     const bytes = await pdfLibDoc.save();
     const blob = new Blob([bytes], {type:'application/pdf'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'easyusehub-numbered.pdf';
-    a.click();
-    toast.style.display='block';
-    setTimeout(()=>{toast.style.display='none';},2500);
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'numbered.pdf';
+    link.click();
 };
 </script>
 </body>

@@ -23,7 +23,16 @@ header p { margin:5px 0 0; font-size:0.95rem; }
 button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; color:#fff; cursor:pointer; margin:5px; }
 input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px solid #ccc; }
 #toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#9333ea; color:#fff; padding:10px 20px; border-radius:8px; display:none; z-index:9999; }
-
+.bottom-nav-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px; /* অ্যাড-এর সাথে যাতে লেগে না যায় */
+}
+.bottom-nav-buttons button {
+    flex: 1; /* বাটনগুলো সমান সাইজের হবে */
+    max-width: 200px;
+}
 /* --- শুধু নতুন অ্যাড গুলোর জন্য এক্সট্রা স্টাইল (তোর ডিজাইনে হাত না দিয়ে) --- */
 .custom-ad-bridge {
     background: linear-gradient(135deg, #1e3a8a, #2563eb);
@@ -83,17 +92,21 @@ input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px soli
 <button id="autoNumberAll">Auto Number Selected Pages</button>
 </div>
 
-<div class="controls">
-<button onclick="window.location.href='https://easyusehub.blogspot.com/?m=1'">🏠 Home</button>
-<button onclick="window.location.href='https://easyusehub.blogspot.com/p/free-pdf-tools-online.html'">📚 All PDF Tools</button>
-<button id="downloadPdf">Download PDF</button>
-</div>
+
 
 <div class="custom-ad-bridge" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="window.open('https://easyusehub.blogspot.com/p/ultimate-calculators-hub.html', '_blank')">
     <b style="font-size:16px;">🔢 Smart Financial & Health Calculators</b><br>
     <div class="ad-btn" style="background:#000; color:#fff;">Open Hub</div>
 </div>
+<div class="custom-ad-bridge" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="window.open('https://easyusehub.blogspot.com/p/ultimate-calculators-hub.html', '_blank')">
+    <b style="font-size:18px;">🔢 Visit Calculators Hub</b><br>
+    <div class="ad-btn" style="background:#000; color:#fff;">Visit Now</div>
+</div>
 
+<div class="bottom-nav-buttons">
+    <button onclick="window.location.href='https://easyusehub.blogspot.com/?m=1'">🏠 Home</button>
+    <button onclick="window.location.href='https://easyusehub.blogspot.com/p/free-pdf-tools-online.html'">📚 All PDF Tools</button>
+</div>
 <div id="pdf-viewer"></div>
 
 <div id="toast">PDF downloaded!</div>

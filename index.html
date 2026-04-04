@@ -5,20 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDF Page Number Tool</title>
 <style>
+/* Tor original style */
 body { font-family: Arial,sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; position: relative; overflow-x: hidden; }
 header { padding:15px; background:#9333ea; color:#fff; text-align:center; }
 header h1 { margin:0; font-size:1.8rem; }
 header p { margin:5px 0 0; font-size:0.95rem; }
 .container { max-width:900px; margin:20px auto; padding:0 15px; }
-
-/* তোর সেইম আপলোড বক্স */
-#upload-box { border:3px dashed #9333ea; padding:20px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; position: relative; }
-#fileInput { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-
+#upload-box { border:3px dashed #9333ea; padding:20px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; }
 #page-selection { margin-bottom:10px; display:flex; flex-wrap:wrap; gap:10px; }
 #page-selection label { background:#f0f0f0; padding:5px 10px; border-radius:5px; cursor:pointer; }
 
-/* বাটন পজিশন চেঞ্জ করার জন্য নিচের স্টাইল */
+/* Tor deya sequence onujayi alignment */
 #number-controls { margin-bottom:10px; display:flex; flex-direction: column; align-items:center; gap:10px; }
 .btn-group { display: flex; gap: 10px; }
 
@@ -30,7 +27,6 @@ button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; 
 input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px solid #ccc; text-align: center; }
 #toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#9333ea; color:#fff; padding:10px 20px; border-radius:8px; display:none; z-index:9999; }
 
-/* তোর সেইম অ্যাড ডিজাইন */
 .custom-ad-bridge { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 20px; margin: 10px 0; border-radius: 8px; cursor: pointer; text-align: center; }
 .ad-btn { background: #fbbf24; color: #000; padding: 5px 15px; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 5px; }
 
@@ -39,7 +35,7 @@ input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px soli
 #push-notification img { width: 45px; height: 45px; border-radius: 5px; margin-right: 10px; }
 .close-push { position: absolute; top: 2px; right: 5px; color: #aaa; cursor: pointer; }
 
-/* বটম বাটন লেআউট */
+/* Home/All Tools niche bishanor jonne */
 .bottom-nav { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
 </style>
 </head>
@@ -56,23 +52,20 @@ input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px soli
 
 <header>
     <h1>PDF Page Number Tool</h1>
-    <p>Upload and add page numbers easily.</p>
 </header>
 
 <div class="container">
     <div class="custom-ad-bridge" onclick="window.open('https://easyusehub.blogspot.com', '_blank')">
-        <b style="font-size:16px;">🚀 Try 46+ Premium Free Web Tools!</b><br>
+        <b>🚀 Try 46+ Premium Free Web Tools!</b><br>
         <div class="ad-btn">Open EasyUseHub</div>
     </div>
 
-    <div id="upload-box">
-        📁 Click to Upload PDF
-        <input type="file" id="fileInput" accept="application/pdf">
-    </div>
+    <div id="upload-box" onclick="document.getElementById('fileInput').click();">📁 Click to Upload PDF</div>
+    <input type="file" id="fileInput" accept="application/pdf" style="display:none;">
 
     <div class="custom-ad-bridge" style="background: linear-gradient(135deg, #059669, #10b981);" onclick="window.open('https://easyusehub.blogspot.com/p/image-compressor.html', '_blank')">
-        <b style="font-size:16px;">⚡ High-Speed Image Compressor</b><br>
-        <small>100% Free & Fast at EasyUseHub</small>
+        <b>⚡ High-Speed Image Compressor</b><br>
+        <small>Free at EasyUseHub</small>
     </div>
 
     <div id="page-selection"></div>
@@ -91,7 +84,7 @@ input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px soli
     <div id="pdf-viewer"></div>
 
     <div class="custom-ad-bridge" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="window.open('https://easyusehub.blogspot.com/p/ultimate-calculators-hub.html', '_blank')">
-        <b style="font-size:16px;">🔢 Visit Calculators Hub</b><br>
+        <b>🔢 Visit Calculators Hub</b><br>
         <div class="ad-btn" style="background:#000; color:#fff;">Visit Now</div>
     </div>
 
@@ -107,7 +100,7 @@ input[type=number] { padding:5px; width:80px; border-radius:5px; border:1px soli
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
 <script>
-// স্ক্রিপ্ট তোর আগেরটাই থাকলো, কোনো পরিবর্তন করি নাই
+/* Tor deya original script - kono logic change kori nai */
 const fileInput = document.getElementById('fileInput');
 const pdfViewer = document.getElementById('pdf-viewer');
 const pageSelection = document.getElementById('page-selection');

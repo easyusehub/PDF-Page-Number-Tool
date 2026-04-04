@@ -5,41 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDF Page Number Tool</title>
 <style>
-/* Tor original design shob thakbe, shudhu text size boro kora hoyeche */
-body { font-family: Arial,sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; position: relative; overflow-x: hidden; font-size: 18px; } /* font-size 18px kora hoyeche */
-header { padding:20px; background:#9333ea; color:#fff; text-align:center; }
-header h1 { margin:0; font-size:2.2rem; } /* Header boro kora hoyeche */
-header p { margin:8px 0 0; font-size:1.1rem; }
+body { font-family: Arial,sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; position: relative; overflow-x: hidden; }
+header { padding:15px; background:#9333ea; color:#fff; text-align:center; }
+header h1 { margin:0; font-size:1.8rem; }
+header p { margin:5px 0 0; font-size:0.95rem; }
 .container { max-width:900px; margin:20px auto; padding:0 15px; }
-#upload-box { border:3px dashed #9333ea; padding:30px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; font-size: 20px; font-weight: bold; }
-#page-selection { margin-bottom:15px; display:flex; flex-wrap:wrap; gap:12px; font-size: 17px; }
-#page-selection label { background:#f0f0f0; padding:8px 12px; border-radius:5px; cursor:pointer; }
-#number-controls { margin-bottom:15px; display:flex; gap:12px; align-items:center; }
+#upload-box { border:3px dashed #9333ea; padding:20px; text-align:center; cursor:pointer; border-radius:10px; background:#fff; margin-bottom:15px; }
+
+/* পেজ সিলেকশন অপশন (তোর ডিজাইন অনুযায়ী) */
+#page-selection { margin-bottom:15px; display:flex; flex-wrap:wrap; gap:10px; justify-content: center; }
+#page-selection label { background:#f0f0f0; padding:5px 10px; border-radius:5px; cursor:pointer; border: 1px solid #ddd; }
+
+/* কন্ট্রোলস পজিশনিং */
+#number-controls { margin-bottom:15px; display:flex; flex-direction: column; align-items:center; gap:12px; }
+.button-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
 #pdf-viewer { width:100%; border:1px solid #ccc; overflow:auto; margin-bottom:20px; background:#fff; position:relative; }
-.controls { display:flex; flex-wrap:wrap; justify-content:center; margin-bottom:15px; }
-button { padding:12px 25px; border:none; border-radius:8px; background:#9333ea; color:#fff; cursor:pointer; margin:8px; font-size: 17px; font-weight: bold; }
-input[type=number] { padding:10px; width:100px; border-radius:5px; border:1px solid #ccc; font-size: 17px; }
-#toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#9333ea; color:#fff; padding:12px 25px; border-radius:8px; display:none; z-index:9999; font-size: 18px; }
+#pdf-viewer canvas { display:block; width:100%; height:auto; margin-bottom:10px; }
 
-/* Ad Bridge Styles (Tor design-e kono disturbance korbe na) */
-.custom-ad-bridge {
-    background: linear-gradient(135deg, #1e3a8a, #2563eb);
-    color: white; padding: 25px; margin: 20px 0; border-radius: 12px;
-    cursor: pointer; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-}
-.ad-title { font-size: 20px; font-weight: bold; display: block; margin-bottom: 5px; }
-.ad-btn { background: #fbbf24; color: #000; padding: 8px 20px; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 10px; text-transform: uppercase; font-size: 15px; }
+/* লাইভ প্রিভিউতে নাম্বার দেখাবে না */
+.page-number { display: none !important; }
 
-/* In-Page Push Ad */
-#push-notification {
-    position: fixed; bottom: -160px; right: 25px; width: 310px;
-    background: #fff; border-radius: 12px; box-shadow: 0 12px 35px rgba(0,0,0,0.25);
-    display: flex; align-items: center; padding: 15px; z-index: 10000;
-    transition: bottom 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); cursor: pointer; border-left: 6px solid #2563eb;
-}
-#push-notification.active { bottom: 25px; }
-#push-notification img { width: 55px; height: 55px; border-radius: 8px; margin-right: 15px; }
-.close-push { position: absolute; top: 8px; right: 12px; font-size: 20px; color: #bbb; cursor: pointer; }
+.controls { display:flex; flex-wrap:wrap; justify-content:center; margin-bottom:10px; }
+button { padding:10px 20px; border:none; border-radius:8px; background:#9333ea; color:#fff; cursor:pointer; margin:5px; font-weight: bold; }
+input[type=number] { padding:10px; width:120px; border-radius:5px; border:1px solid #ccc; text-align: center; font-size: 16px; }
+#toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#9333ea; color:#fff; padding:10px 20px; border-radius:8px; display:none; z-index:9999; }
+
+/* Ad Bridge */
+.custom-ad-bridge { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 20px; margin: 10px 0; border-radius: 8px; cursor: pointer; text-align: center; }
+.ad-btn { background: #fbbf24; color: #000; padding: 5px 15px; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 5px; }
+
+#push-notification { position: fixed; bottom: -150px; right: 20px; width: 280px; background: #fff; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: flex; align-items: center; padding: 10px; z-index: 10000; transition: bottom 0.5s ease; cursor: pointer; border-left: 5px solid #2563eb; }
+#push-notification.active { bottom: 20px; }
+#push-notification img { width: 45px; height: 45px; border-radius: 5px; margin-right: 10px; }
+.close-push { position: absolute; top: 2px; right: 5px; color: #aaa; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -47,54 +46,52 @@ input[type=number] { padding:10px; width:100px; border-radius:5px; border:1px so
 <div id="push-notification" onclick="window.open('https://easyusehub.blogspot.com', '_blank')">
     <span class="close-push" onclick="event.stopPropagation(); this.parentElement.classList.remove('active');">&times;</span>
     <img src="https://cdn-icons-png.flaticon.com/512/5968/5968313.png" alt="icon">
-    <div style="text-align:left;">
-        <b style="color:#222; font-size: 15px;">🚀 46+ Pro Tools Ready!</b>
-        <p style="margin:4px 0; color:#666; font-size: 13px;">Free PDF Tools, Calculators & AI tools at EasyUseHub.</p>
+    <div style="text-align:left; font-size:12px;">
+        <b style="color:#222;">🚀 46+ Pro Tools Ready!</b>
+        <p style="margin:2px 0; color:#666;">Check all free PDF tools & calculators.</p>
     </div>
 </div>
 
 <header>
 <h1>PDF Page Number Tool</h1>
-<p>Easily add and edit page numbers on your PDF document.</p>
+<p>Select pages, add numbers, and download updated PDF.</p>
 </header>
 
 <div class="container">
+    <div class="custom-ad-bridge" onclick="window.open('https://easyusehub.blogspot.com', '_blank')">
+        <b style="font-size:16px;">🚀 Try 46+ Premium Free Web Tools!</b><br>
+        <div class="ad-btn">Open EasyUseHub</div>
+    </div>
 
-<div class="custom-ad-bridge" onclick="window.open('https://easyusehub.blogspot.com', '_blank')">
-    <span class="ad-title">🚀 Try 46+ Premium Free Web Tools!</span>
-    <p style="font-size: 16px;">All PDF Tools, 16+ Calculators & AI - 100% Free</p>
-    <div class="ad-btn">Open EasyUseHub</div>
-</div>
+    <div id="upload-box">📁 Upload PDF</div>
+    <input type="file" id="fileInput" accept="application/pdf" hidden>
 
-<div id="upload-box">📁 Click here to Upload PDF</div>
-<input type="file" id="fileInput" accept="application/pdf" hidden>
+    <div id="page-selection"></div>
 
-<div class="custom-ad-bridge" style="background: linear-gradient(135deg, #059669, #10b981);" onclick="window.open('https://easyusehub.blogspot.com/p/image-compressor.html', '_blank')">
-    <span class="ad-title">⚡ High-Speed Image Compressor</span>
-    <p style="font-size: 16px;">Compress images fast without losing quality.</p>
-</div>
+    <div id="number-controls">
+        <input type="number" id="pageNumberInput" placeholder="Start No.">
+        
+        <div class="button-group">
+            <button id="addNumberBtn">Add Number</button>
+            <button id="autoNumberAll">Auto Number All</button>
+        </div>
 
-<div id="page-selection"></div>
+        <button id="downloadPdf" style="background:#2563eb; width: 220px;">📥 Download PDF</button>
+    </div>
 
-<div id="number-controls">
-<input type="number" id="pageNumberInput" placeholder="Start at">
-<button id="addNumberBtn">Add Number</button>
-<button id="autoNumberAll">Auto Number All</button>
-</div>
+    <div id="pdf-viewer"></div>
 
-<div class="controls">
-<button onclick="window.location.href='https://easyusehub.blogspot.com/?m=1'" style="background:#f59e0b;">🏠 Home</button>
-<button onclick="window.location.href='https://easyusehub.blogspot.com/p/free-pdf-tools-online.html'" style="background:#10b981;">📚 All Tools</button>
-<button id="downloadPdf" style="background:#2563eb;">📥 Download PDF</button>
-</div>
+    <div class="custom-ad-bridge" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="window.open('https://easyusehub.blogspot.com/p/ultimate-calculators-hub.html', '_blank')">
+        <b style="font-size:16px;">🔢 Visit Calculators Hub</b><br>
+        <div class="ad-btn" style="background:#000; color:#fff;">Visit Now</div>
+    </div>
 
-<div class="custom-ad-bridge" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="window.open('https://easyusehub.blogspot.com/p/ultimate-calculators-hub.html', '_blank')">
-    <span class="ad-title">🔢 Smart Financial & Health Calculators</span>
-    <div class="ad-btn" style="background:#000; color:#fff;">Visit Hub</div>
-</div>
+    <div class="controls">
+        <button onclick="window.location.href='https://easyusehub.blogspot.com/?m=1'">🏠 Home</button>
+        <button onclick="window.location.href='https://easyusehub.blogspot.com/p/free-pdf-tools-online.html'">📚 All PDF Tools</button>
+    </div>
 
-<div id="pdf-viewer"></div>
-<div id="toast">PDF Downloaded Successfully!</div>
+    <div id="toast">PDF downloaded!</div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -112,19 +109,15 @@ const downloadBtn = document.getElementById('downloadPdf');
 const toast = document.getElementById('toast');
 
 let pdfDoc = null, pdfBytes = null;
-let numberDivs = [];
+let numberData = []; 
 
 uploadBox.onclick = () => fileInput.click();
 
 fileInput.addEventListener('change', async e => {
     const file = e.target.files[0];
     if(!file) return;
-
-    // Push ad show logic
-    setTimeout(() => { document.getElementById('push-notification').classList.add('active'); }, 1200);
-
+    setTimeout(() => { document.getElementById('push-notification').classList.add('active'); }, 1000);
     pdfBytes = await file.arrayBuffer();
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
     pdfDoc = await pdfjsLib.getDocument({data: pdfBytes}).promise;
     renderAllPages();
     createPageSelection();
@@ -132,37 +125,18 @@ fileInput.addEventListener('change', async e => {
 
 async function renderAllPages(){
     pdfViewer.innerHTML = '';
-    numberDivs = [];
+    numberData = new Array(pdfDoc.numPages).fill("");
+
     for(let p=1; p<=pdfDoc.numPages; p++){
         const page = await pdfDoc.getPage(p);
-        const viewport = page.getViewport({scale:1.2});
-        const wrapper = document.createElement('div');
-        wrapper.style.position = 'relative';
-        wrapper.style.marginBottom = '20px';
-        
+        const viewport = page.getViewport({scale:1});
+        const scale = pdfViewer.clientWidth / viewport.width;
+        const scaledViewport = page.getViewport({scale:scale});
         const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        canvas.style.width = "100%";
-        await page.render({canvasContext: canvas.getContext('2d'), viewport: viewport}).promise;
-        wrapper.appendChild(canvas);
-        
-        const numDiv = document.createElement('div');
-        numDiv.style.position = 'absolute';
-        numDiv.style.bottom = '15px';
-        numDiv.style.left = '50%';
-        numDiv.style.transform = 'translateX(-50%)';
-        numDiv.style.fontSize = '26px';
-        numDiv.style.color = '#ff0000';
-        numDiv.style.background = 'rgba(255,255,255,0.8)';
-        numDiv.style.padding = '4px 10px';
-        numDiv.style.borderRadius = '5px';
-        numDiv.style.display = 'none';
-        numDiv.innerText = '';
-        wrapper.appendChild(numDiv);
-        
-        pdfViewer.appendChild(wrapper);
-        numberDivs.push(numDiv);
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+        await page.render({canvasContext: canvas.getContext('2d'), viewport: scaledViewport}).promise;
+        pdfViewer.appendChild(canvas);
     }
 }
 
@@ -172,7 +146,7 @@ function createPageSelection(){
         const label = document.createElement('label');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.checked = true;
+        checkbox.checked = true; // ডিফল্ট সব সিলেক্ট থাকবে
         checkbox.dataset.page = i;
         label.appendChild(checkbox);
         label.append(` Page ${i}`);
@@ -185,44 +159,48 @@ addNumberBtn.onclick = () => {
     if(!number) return;
     pageSelection.querySelectorAll('input[type=checkbox]').forEach(cb=>{
         if(cb.checked){
-            const page = parseInt(cb.dataset.page) - 1;
-            numberDivs[page].innerText = number;
-            numberDivs[page].style.display = 'block';
+            const pageIdx = parseInt(cb.dataset.page) - 1;
+            numberData[pageIdx] = number;
         }
     });
+    alert("Numbers added to selected pages.");
+    pageNumberInput.value = '';
 };
 
 autoNumberAll.onclick = () => {
-    let startVal = parseInt(pageNumberInput.value) || 1;
+    let counter = parseInt(pageNumberInput.value) || 1;
     pageSelection.querySelectorAll('input[type=checkbox]').forEach(cb=>{
         if(cb.checked){
-            const page = parseInt(cb.dataset.page) - 1;
-            numberDivs[page].innerText = startVal++;
-            numberDivs[page].style.display = 'block';
+            const pageIdx = parseInt(cb.dataset.page) - 1;
+            numberData[pageIdx] = counter++.toString();
         }
     });
+    alert("Auto-numbering applied successfully!");
 };
 
 downloadBtn.onclick = async () => {
     const pdfLibDoc = await PDFLib.PDFDocument.load(pdfBytes);
     const pages = pdfLibDoc.getPages();
-    const font = await pdfLibDoc.embedFont(PDFLib.StandardFonts.Helvetica_Bold);
-    pages.forEach((page,i)=>{
-        if(numberDivs[i].style.display === 'block'){
-            const text = numberDivs[i].innerText || '';
-            const { width } = page.getSize();
-            page.drawText(text,{x: width/2 - 10, y: 25, size: 24, font: font, color: PDFLib.rgb(0,0,0)});
+    const blackColor = PDFLib.rgb(0, 0, 0); // পিওর ব্ল্যাক কালার
+
+    pages.forEach((page, i) => {
+        if(numberData[i] && numberData[i] !== ""){
+            const text = numberData[i];
+            const x = page.getWidth()/2 - 10;
+            const y = 35; // নাম্বার বর্ডার থেকে একটু উপরে
+            page.drawText(text, {x:x, y:y, size:24, color:blackColor});
         }
     });
+
     const bytes = await pdfLibDoc.save();
     const blob = new Blob([bytes], {type:'application/pdf'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'numbered-easyusehub.pdf';
+    a.download = 'easyusehub-numbered.pdf';
     a.click();
     toast.style.display='block';
-    setTimeout(()=>{toast.style.display='none';},3000);
+    setTimeout(()=>{toast.style.display='none';},2500);
 };
 </script>
 </body>
